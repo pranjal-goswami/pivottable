@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>GT Pivot</title>
+        <!-- external libs from cdnjs -->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+
+        <!-- PivotTable.js libs from ../dist -->
+        <link rel="stylesheet" type="text/css" href="pivot.css">
+        <script type="text/javascript" src="pivot.js"></script>
+        <style>
+            body {font-family: Roboto, 'Helvetica Neue';}
+        </style>
+
+        <script type="text/javascript" src="customRenderer.js"></script>
+        <!-- for examples only! script to show code to user -->
+        <script type="text/javascript" src="app.js"></script>
+    </head>
+    <body>
+
+        <button onclick="copyPivotConfig()">Copy Config</button>
+
+        <div id="output" style="margin: 30px;"></div>
+
+    </body>
+</html>
