@@ -536,7 +536,7 @@
                 return $(pivotTableRenderer(pivotData, opts)).gtHeatmap("heatmap", opts);
             },
             "GT Table Heatmap and Barchart": function (pivotData, opts) {
-                return $($(pivotTableRenderer(pivotData, opts)).gtHeatmap("heatmap", opts)).barchart();
+                return $($(pivotTableRenderer(pivotData, opts)).gtHeatmap("heatmap", opts)).gtBarchart(opts);
             },
             "GT Table Row Heatmap": function (pivotData, opts) {
                 return $(pivotTableRenderer(pivotData, opts)).gtHeatmap("rowheatmap", opts);

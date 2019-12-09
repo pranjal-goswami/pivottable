@@ -31,15 +31,15 @@ $(function () {
         'agg2': {
             aggType: 'Average',
             arguments: ['History Marks'],
-            name: 'Avg of History Marks',
+            name: 'Avg(History)',
             varName :'b',
-            hidden : false,
+            hidden : true,
             renderEnhancement : 'barchart'
         },
         'agg3': {
             aggType: 'Sum',
             arguments: ['Maths Marks'],
-            name: 'Sum of Maths Marks',
+            name: 'Sum(Maths)',
             varName :'c',
             hidden : false,
             renderEnhancement : 'heatmap'
@@ -48,18 +48,19 @@ $(function () {
 
     var derivedAggregations = [
         {
-            name : 'Avg Percentage',
+            name : 'Avg GPA',
             description : 'sum Maths marks / avg Math marks',
-            expression : 'variables.b/variables.c',
+            expression : 'variables.b*100/variables.c',
             renderEnhancement : 'barchart',
+            barchartColor : '#fa983a',
             formatterOptions : {
                 digitsAfterDecimal: 1,
-                scaler: 100,
+                scaler: 1,
                 suffix: "%"
             }
         },
         {
-            name : 'derivedAgg2',
+            name : 'Success Score',
             description : 'Count of English Marks / Avg. of Maths Marks',
             expression : 'variables.a/variables.b',
             renderEnhancement : 'heatmap'
@@ -106,7 +107,7 @@ $(function () {
         "showUI": true,
         "inclusionsInfo": {},
         "aggregatorName": "Multifact Aggregators",
-        "rendererName": "GT Table Heatmap",
+        "rendererName": "GT Table Heatmap and Barchart",
         "rendererOptions" : {
 
             aggregations : {
@@ -122,11 +123,11 @@ $(function () {
                     max = Math.max.apply(Math, values);
 
                     var customColorRange = {
-                        'Avg Percentage':["#FFF", "#6a89cc"],
-                        'Avg of History Marks':["#FFF", "#78e08f"],
+                        'Avg GPA':["#FFF", "#6a89cc"],
+                        'Avg(History)':["#FFF", "#78e08f"],
                         'Count of English Marks' : ["#FFF", "#e55039"],
-                        'Sum of Maths Marks' : ["#FFF", "#fff"],
-                        'derivedAgg2' : ["#FFF", "#38ada9"],
+                        'Sum(Maths)' : ["#FFF", "#fff"],
+                        'Success Score' : ["#FFF", "#38ada9"],
                     };
 
                     var colorRange = customColorRange[statKey] || ["#FFF", "#6a89cc"];
@@ -157,7 +158,7 @@ $(function () {
     var config = mini ? _miniconfig : _config;
 
 
-    Papa.parse((mini ? 'mini-' : '') + 'data.csv', {
+    Papa.parse((mini ? 'medium-' : '') + 'data.csv', {
         download: true,
         skipEmptyLines: true,
         complete: function (parsed) {

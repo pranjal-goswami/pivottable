@@ -25,16 +25,12 @@
     };
 
     callWithJQuery(function ($) {
-        $.fn.gtHeatmap = function (scope, opts) {
-            var colorScaleGenerator, heatmapper, i, x, j, l, n, numCols, numRows, ref, ref1, ref2, _finalAggregatorsNameMap, _finalDerivedAggregatorsNameMap;
-            if (scope == null) {
-                scope = "heatmap";
-            }
+        $.fn.gtBarchart = function(opts) {
+            var barcharter, i, l, numCols, numRows, ref;
             numRows = this.data("numrows");
             numCols = this.data("numcols");
 
-
-            _finalAggregatorsNameMap = {};
+            var _finalAggregatorsNameMap = {};
             var finalAggregators = $.map(opts.aggregations.defaultAggregations, function (aggregation) {
                 return aggregation;
             }) || [];
@@ -45,7 +41,7 @@
             }
 
             var derivedAggregations = opts.aggregations.derivedAggregations || [];
-            _finalDerivedAggregatorsNameMap = {};
+            var _finalDerivedAggregatorsNameMap = {};
             for (i = 0, x = derivedAggregations.length; i < x; i++) {
                 var derivedAggregation = derivedAggregations[i];
                 _finalDerivedAggregatorsNameMap[derivedAggregation.name] = derivedAggregation;
@@ -54,24 +50,11 @@
             var aggregationMap = $.extend(true, {}, _finalAggregatorsNameMap, _finalDerivedAggregatorsNameMap)
 
 
-            colorScaleGenerator = opts != null ? (ref = opts.heatmap) != null ? ref.colorScaleGenerator : void 0 : void 0;
-            if (colorScaleGenerator == null) {
-                colorScaleGenerator = function (values) {
-                    var max, min;
-                    min = Math.min.apply(Math, values);
-                    max = Math.max.apply(Math, values);
-                    return function (x) {
-                        var nonRed;
-                        nonRed = 255 - Math.round(255 * (x - min) / (max - min));
-                        return "rgb(255," + nonRed + "," + nonRed + ")";
-                    };
-                };
-            }
-            heatmapper = (function (_this) {
-                return function (scope) {
-                    var colorScale, forEachCell, values, valueSets, colorScaleSets;
-                    forEachCell = function (f) {
-                        return _this.find(scope).each(function () {
+            barcharter = (function(_this) {
+                return function(scope) {
+                    var forEachCell, max, min, range, values, valueSets;
+                    forEachCell = function(f) {
+                        return _this.find(scope).each(function() {
                             var x, valueAttributeKey;
                             x = $(this).data("value");
                             valueAttributeKey = $(this).data("value-for");
@@ -82,24 +65,76 @@
                     };
                     values = [];
                     valueSets = {};
-                    forEachCell(function (x, elem, valueAttributeKey) {
+                    forEachCell(function(x, elem, valueAttributeKey) {
                         valueSets[valueAttributeKey] = valueSets[valueAttributeKey] || [];
                         valueSets[valueAttributeKey].push(x);
                         return values.push(x);
                     });
-                    console.log(valueSets);
 
-                    colorScaleSets = {};
+                    var scalerSet = {};
+
                     Object.keys(valueSets).forEach(function(key){
                         if(valueSets.hasOwnProperty(key)){
-                            colorScaleSets[key] = colorScaleGenerator(valueSets[key], key)
+
+                            max = Math.max.apply(Math, values);
+                            if (max < 0) {
+                                max = 0;
+                            }
+
+                            range = max;
+
+                            min = Math.min.apply(Math, values);
+                            if (min < 0) {
+                                range = max - min;
+                            }
+                            scalerSet[key] = (function(){ return function(x) {
+                                return 100 * x / (1.4 * range);
+                            }})();
                         }
                     });
 
-                    return forEachCell(function (x, elem, valueAttributeKey) {
+
+                    return forEachCell(function(x, elem, valueAttributeKey) {
+                        var bBase, bgColor, text, wrapper, scaler;
+                        scaler = scalerSet[valueAttributeKey];
+
                         var opts = aggregationMap[valueAttributeKey];
-                        if(opts && opts.renderEnhancement ==='heatmap'){
-                            return elem.css("background-color", colorScaleSets[valueAttributeKey](x));
+
+                        if(opts && opts.renderEnhancement ==='barchart'){
+                            text = elem.text();
+                            wrapper = $("<div>").css({
+                                "position": "relative",
+                                "width": "120px"
+                            });
+                            bgColor = opts.barchartColor || "steelblue";
+                            bBase = 0;
+                            if (min < 0) {
+                                bBase = scaler(-min);
+                            }
+                            if (x < 0) {
+                                bBase += scaler(x);
+                                bgColor = opts.barchartNegativeColor || "darkred";
+                                x = -x;
+                            }
+                            wrapper.append($("<div>").css({
+                                "position": "absolute",
+                                "top": bBase + "%",
+                                "left": 0,
+                                //"right": 0,
+                                "height" : "12px",
+                                "width": scaler(x) + "%",
+                                "background-color": bgColor
+                            }));
+                            wrapper.append($("<div>").text(text).css({
+                                "position": "relative",
+                                "padding-left": "5px",
+                                "padding-right": "5px"
+                            }));
+                            return elem.css({
+                                "padding": 0,
+                                "padding-top": "5px",
+                                "text-align": "right"
+                            }).html(wrapper);
                         } else {
                             return elem;
                         }
@@ -107,22 +142,10 @@
                     });
                 };
             })(this);
-            switch (scope) {
-                case "heatmap":
-                    heatmapper(".pvtVal");
-                    break;
-                case "rowheatmap":
-                    for (i = l = 0, ref1 = numRows; 0 <= ref1 ? l < ref1 : l > ref1; i = 0 <= ref1 ? ++l : --l) {
-                        heatmapper(".pvtVal.row" + i);
-                    }
-                    break;
-                case "colheatmap":
-                    for (j = n = 0, ref2 = numCols; 0 <= ref2 ? n < ref2 : n > ref2; j = 0 <= ref2 ? ++n : --n) {
-                        heatmapper(".pvtVal.col" + j);
-                    }
+            for (i = l = 0, ref = numRows; 0 <= ref ? l < ref : l > ref; i = 0 <= ref ? ++l : --l) {
+                barcharter(".pvtVal.row" + i);
             }
-            heatmapper(".pvtTotal.rowTotal");
-            heatmapper(".pvtTotal.colTotal");
+            //barcharter(".pvtTotal.colTotal");
             return this;
         };
     });
