@@ -129,13 +129,20 @@ $(function () {
                 mouseEnterCallback : function(e, value, filters, pivotData){
                     tooltipElem.css({top:e.y, left:e.x})
                     tooltipElem.addClass('visible')
-                    console.log(filters);
+                    var elem = $($(e.target)[0]);
+                    var row, col;
+                    row = elem.data('row');
+                    col = elem.data('col')
+                    $('.row'+row).addClass('highlighted')
+                    $('.col'+col).addClass('highlighted')
 
                 },
                 mouseLeaveCallback : function(e, value, filters, pivotData){
                     console.log(e, value, filters)
-                    tooltipElem.removeClass('visible')
+                    tooltipElem.removeClass('visible');
+                    $('.pvtVal').removeClass('highlighted')
                     console.log('Destroy tooltip');
+
 
                 },
 

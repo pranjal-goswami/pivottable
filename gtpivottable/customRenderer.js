@@ -384,6 +384,8 @@
 
                         td.append(valueSpan[0]);
                         td.setAttribute("data-value", val);
+                        td.setAttribute("data-row", i);
+                        td.setAttribute("data-col", j);
                         td.setAttribute("data-value-for", stat);
                         if (getClickHandler != null) {
                             td.onclick = getClickHandler(val, rowKey, colKey);
