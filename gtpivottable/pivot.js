@@ -118,6 +118,8 @@
             return {
               sum: 0,
               push: function(record) {
+                  //console.log('Push called for record',record)
+                  //console.log('attr is',record)
                 if (!isNaN(parseFloat(record[attr]))) {
                   return this.sum += parseFloat(record[attr]);
                 }

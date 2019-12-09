@@ -112,3 +112,10 @@ table.pvtTable tbody tr td {
 .pvtCheckContainer p{ margin: 5px; }
 
 .pvtRendererArea { padding: 5px;}
+
+.small{
+    font-size:0.9em;
+}
+.text-grey {
+    color:#ddd;
+}
