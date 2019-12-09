@@ -90,6 +90,8 @@ $(function () {
         "rendererName": "Table Barchart"
     };
 
+    var tooltipElem = $('#tooltip1');
+
     var _miniconfig = {
         "hiddenAttributes": [],
         "hiddenFromAggregators": [],
@@ -113,6 +115,30 @@ $(function () {
             aggregations : {
                 defaultAggregations : aggMap,
                 derivedAggregations : derivedAggregations
+
+            },
+            table : {
+                clickCallback : function(e, value, filters, pivotData){
+                    var records = [];
+                    pivotData.forEachMatchingRecord(filters,
+                        function(record){ records.push(record); }
+                    );
+                    console.log(records);
+
+                },
+                mouseEnterCallback : function(e, value, filters, pivotData){
+                    tooltipElem.css({top:e.y, left:e.x})
+                    tooltipElem.addClass('visible')
+                    console.log(filters);
+
+                },
+                mouseLeaveCallback : function(e, value, filters, pivotData){
+                    console.log(e, value, filters)
+                    tooltipElem.removeClass('visible')
+                    console.log('Destroy tooltip');
+
+                },
+
 
             },
             heatmap: {

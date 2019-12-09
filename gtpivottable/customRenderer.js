@@ -26,12 +26,15 @@
     };
 
     var pivotTableRenderer = function (pivotData, opts) {
-        var aggregator, c, colAttrs, colKey, colKeys, defaults, getClickHandler, i, j, r, result,
+        var aggregator, c, colAttrs, colKey, colKeys, defaults, getClickHandler, getMouseEnterHandler, getMouseLeaveHandler, getMouseMoveHandler, i, j, r, result,
             rowAttrs, rowKey, rowKeys, spanSize, tbody, td, th, thead, totalAggregator, tr, txt, val, x,
             valueAttrs;
         defaults = {
             table: {
                 clickCallback: null,
+                mouseEnterCallback: null,
+                mouseLeaveCallback: null,
+                mouseMoveCallback: null,
                 rowTotals: true,
                 colTotals: true
             },
@@ -88,6 +91,78 @@
                 }
                 return function (e) {
                     return opts.table.clickCallback(e, value, filters, pivotData);
+                };
+            };
+        }
+
+        if (opts.table.mouseEnterCallback) {
+            getMouseEnterHandler = function (value, rowValues, colValues) {
+                var attr, filters, i;
+                filters = {};
+                for (i in colAttrs) {
+                    if (!hasProp.call(colAttrs, i)) continue;
+                    attr = colAttrs[i];
+                    if (colValues[i] != null) {
+                        filters[attr] = colValues[i];
+                    }
+                }
+                for (i in rowAttrs) {
+                    if (!hasProp.call(rowAttrs, i)) continue;
+                    attr = rowAttrs[i];
+                    if (rowValues[i] != null) {
+                        filters[attr] = rowValues[i];
+                    }
+                }
+                return function (e) {
+                    return opts.table.mouseEnterCallback(e, value, filters, pivotData);
+                };
+            };
+        }
+
+        if (opts.table.mouseLeaveCallback) {
+            getMouseLeaveHandler= function (value, rowValues, colValues) {
+                var attr, filters, i;
+                filters = {};
+                for (i in colAttrs) {
+                    if (!hasProp.call(colAttrs, i)) continue;
+                    attr = colAttrs[i];
+                    if (colValues[i] != null) {
+                        filters[attr] = colValues[i];
+                    }
+                }
+                for (i in rowAttrs) {
+                    if (!hasProp.call(rowAttrs, i)) continue;
+                    attr = rowAttrs[i];
+                    if (rowValues[i] != null) {
+                        filters[attr] = rowValues[i];
+                    }
+                }
+                return function (e) {
+                    return opts.table.mouseLeaveCallback(e, value, filters, pivotData);
+                };
+            };
+        }
+
+        if (opts.table.mouseMoveCallback) {
+            getMouseMoveHandler= function (value, rowValues, colValues) {
+                var attr, filters, i;
+                filters = {};
+                for (i in colAttrs) {
+                    if (!hasProp.call(colAttrs, i)) continue;
+                    attr = colAttrs[i];
+                    if (colValues[i] != null) {
+                        filters[attr] = colValues[i];
+                    }
+                }
+                for (i in rowAttrs) {
+                    if (!hasProp.call(rowAttrs, i)) continue;
+                    attr = rowAttrs[i];
+                    if (rowValues[i] != null) {
+                        filters[attr] = rowValues[i];
+                    }
+                }
+                return function (e) {
+                    return opts.table.mouseMoveCallback(e, value, filters, pivotData);
                 };
             };
         }
@@ -313,8 +388,24 @@
                         if (getClickHandler != null) {
                             td.onclick = getClickHandler(val, rowKey, colKey);
                         }
+
+                        if (getMouseEnterHandler != null) {
+                            td.onmouseenter = getMouseEnterHandler(val, rowKey, colKey);
+                        }
+
+                        if (getMouseLeaveHandler != null) {
+                            td.onmouseleave = getMouseLeaveHandler(val, rowKey, colKey);
+
+                        }
+
+                        if (getMouseMoveHandler != null) {
+                            td.onmouseleave = getMouseMoveHandler(val, rowKey, colKey);
+
+                        }
                         tr.appendChild(td);
                     }
+
+
 
                 } else {
 
@@ -367,6 +458,7 @@
                         if (getClickHandler != null) {
                             td.onclick = getClickHandler(val, rowKey, []);
                         }
+
                         td.setAttribute("data-for", "row" + i);
                         tr.appendChild(td);
 

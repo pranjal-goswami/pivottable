@@ -21,8 +21,31 @@
         <script type="text/javascript" src="customRenderer.js"></script>
         <!-- for examples only! script to show code to user -->
         <script type="text/javascript" src="app.js"></script>
+        <style>
+            .tooltip{
+                color:#fff;
+                background:#666;
+                border-radius:5px;
+                width: 180px;
+                height: 100px;
+                display: none;
+                position: absolute;
+                padding:10px;
+                z-index:2;
+                opacity:0.8;
+            }
+            .tooltip.visible{
+                display: block;
+            }
+        </style>
     </head>
-    <body>
+    <body style="position:relative">
+
+    <div id="tooltip1" class="tooltip">
+        Details about the Cell
+    </div>
+
+
 
         <button onclick="copyPivotConfig()">Copy Config</button>
 
