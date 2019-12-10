@@ -368,10 +368,11 @@
 
                 if (!!aggregator.multivalue) {
                     var stats = aggregator.multivalue();
+                    var idx = 0;
                     for (var stat in stats) {
                         val = stats[stat]
                         td = document.createElement("td");
-                        td.className = "pvtVal row" + i + " col" + j;
+                        td.className = "pvtVal row" + i + " col" + j+" stat"+idx;
                         //td.textContent = stat + ' : ' + aggregator.format(val);
                         //td.textContent = aggregator.format(val);
                         var valueSpan = $('<span>');
@@ -385,6 +386,7 @@
                         td.append(valueSpan[0]);
                         td.setAttribute("data-value", val);
                         td.setAttribute("data-row", i);
+                        td.setAttribute("data-stat-index", idx);
                         td.setAttribute("data-col", j);
                         td.setAttribute("data-value-for", stat);
                         if (getClickHandler != null) {
@@ -405,6 +407,7 @@
 
                         }
                         tr.appendChild(td);
+                        idx++;
                     }
 
 

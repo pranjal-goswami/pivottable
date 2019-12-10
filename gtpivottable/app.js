@@ -130,11 +130,12 @@ $(function () {
                     tooltipElem.css({top:e.y, left:e.x})
                     tooltipElem.addClass('visible')
                     var elem = $($(e.target)[0]);
-                    var row, col;
+                    var row, col, statIndex;
                     row = elem.data('row');
-                    col = elem.data('col')
+                    col = elem.data('col');
+                    statIndex = elem.data('stat-index')
                     $('.row'+row).addClass('highlighted')
-                    $('.col'+col).addClass('highlighted')
+                    $('.col'+col+'.stat'+statIndex).addClass('highlighted')
 
                 },
                 mouseLeaveCallback : function(e, value, filters, pivotData){
